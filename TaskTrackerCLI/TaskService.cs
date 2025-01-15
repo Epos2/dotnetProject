@@ -3,6 +3,18 @@ using System.Text.Json;
 namespace TaskTrackerCLI;
     public class TaskService
     {
+
+        private readonly string list = "list";
+        private readonly string listDone = "list done";
+        private readonly string listTodo = "list todo";
+        private readonly string listInProgress = "list in-progress";
+        private readonly string markInProgress = "mark-in-progress";
+        private readonly string markDone = "mark-done";
+        private readonly string delete = "delete";
+        private readonly string add = "add";
+        private readonly string update = "update";
+
+
         public List<TaskModel> ReadFileData(string pathToFile) {
             CreateFileIfNotExists(pathToFile);
             return ReadFileContents(pathToFile);
@@ -13,23 +25,23 @@ namespace TaskTrackerCLI;
                 return;
             }
             string commandCopy = command.ToLower();
-            if (commandCopy == "list") {
+            if (commandCopy == list) {
                 ListAllTasks(taskModels);
                 return;
             }
-            if (commandCopy == "list done") {
+            if (commandCopy == listDone) {
                 ListDoneTasks(taskModels);
                 return;
             }
-            if (commandCopy == "list todo") {
+            if (commandCopy == listTodo) {
                 ListTodoTasks(taskModels);
                 return;
             } 
-            if (commandCopy == "list in-progress") {
+            if (commandCopy == listInProgress) {
                 ListInProgressTasks(taskModels);
                 return;
             } 
-            if (commandCopy.StartsWith("mark-in-progress")) {
+            if (commandCopy.StartsWith(markInProgress)) {
                 int id = GetIdFromCommand(commandCopy);
                 if (id == -1) {
                     return;
@@ -37,7 +49,7 @@ namespace TaskTrackerCLI;
                     UpdateStatus(taskModels, id, "in-progress");
                 }
             }
-            if (commandCopy.StartsWith("mark-done")) {
+            if (commandCopy.StartsWith(markDone)) {
                 int id = GetIdFromCommand(commandCopy);
                 if (id == -1) {
                     return;
@@ -45,7 +57,7 @@ namespace TaskTrackerCLI;
                     UpdateStatus(taskModels, id, "done");
                 }
             }
-            if (commandCopy.StartsWith("delete")) {
+            if (commandCopy.StartsWith(delete)) {
                 int id = GetIdFromCommand(commandCopy);
                 if (id == -1) {
                     return;
@@ -53,10 +65,10 @@ namespace TaskTrackerCLI;
                     taskModels.RemoveAll(taskModel => taskModel.Id == id);
                 }
             }
-            if (commandCopy.StartsWith("add")) {
+            if (commandCopy.StartsWith(add)) {
                 AddTask(taskModels, command);
             }
-            if (commandCopy.StartsWith("update")) {
+            if (commandCopy.StartsWith(update)) {
                 UpdateTask(taskModels, command);
             }
             UpdateFileContents(pathToFile, taskModels);
@@ -119,14 +131,14 @@ namespace TaskTrackerCLI;
 
         private void ListAllTasks(List<TaskModel> taskModels) {
             foreach (TaskModel taskModel in taskModels) {
-                Console.WriteLine(taskModel);
+                Console.WriteLine("{0} {1}", taskModel.Description, taskModel.Status);
             }
         }
 
         private void ListDoneTasks(List<TaskModel> taskModels) {
             foreach (TaskModel taskModel in taskModels) {
                 if (taskModel.Status == "done") {
-                    Console.WriteLine(taskModel);
+                    Console.WriteLine("{0} {1}", taskModel.Description, taskModel.Status);
                 }
             }
         }
@@ -134,7 +146,7 @@ namespace TaskTrackerCLI;
         private void ListTodoTasks(List<TaskModel> taskModels) {
             foreach (TaskModel taskModel in taskModels) {
                 if (taskModel.Status == "todo") {
-                    Console.WriteLine(taskModel);
+                    Console.WriteLine("{0} {1}", taskModel.Description, taskModel.Status);
                 }
             }
         }
@@ -142,7 +154,7 @@ namespace TaskTrackerCLI;
         private void ListInProgressTasks(List<TaskModel> taskModels) {
             foreach (TaskModel taskModel in taskModels) {
                 if (taskModel.Status == "in-progress") {
-                    Console.WriteLine(taskModel);
+                    Console.WriteLine("{0} {1}", taskModel.Description, taskModel.Status);
                 }
             }
         }
